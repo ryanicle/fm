@@ -72,11 +72,7 @@ class Friend < ApplicationRecord
     @sender_friend = self.where(sender_id: @sender.id, recipient_id: @recipient.id).first_or_create
     @recipient_friend = self.where(sender_id: @recipient.id, recipient_id: @sender.id).first_or_create
 
-    unless @sender_friend.nil?
-      @sender_friend.subscribed = true
-      @sender_friend.subscribed_at = Time.now
-      @sender_friend.save
-
+    unless @recipient_friend.nil?
       @recipient_friend.subscribed = true
       @recipient_friend.subscribed_at = Time.now
       @recipient_friend.save
@@ -103,13 +99,14 @@ class Friend < ApplicationRecord
   def self.can_receive_updates(sender_email, text)
     @sender = User.where(email: sender_email).first
 
-    @friends = self.where(sender_id: @sender.id, friendship: true, subscribed: true, current_status: 'approved')
-
-    @emails = self.extract_emails_to_array(text)
+    @friends = self.where(sender_id: @sender.id, subscribed: true)
+    @emails = []
 
     @friends.each do |friend|
       @emails.push(friend.recipient.email)
     end
+    # Merge two arrays into one
+    @emails = @emails | self.extract_emails_to_array(text)
     @emails
   end
 

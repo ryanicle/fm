@@ -4,7 +4,6 @@ class Api::V1::FriendsController < Api::V1::ApplicationController
   def add
     sender = User.where(email: params[:friends][0]).first
     recipient = User.where(email: params[:friends][1]).first
-
     if Friend.request_friend(sender.id, recipient.id)
       render json: { success: true }
     end
@@ -13,7 +12,7 @@ class Api::V1::FriendsController < Api::V1::ApplicationController
   # Find list of friends for a user
   # GET /api/v1/list.json
   def list
-    @emails = Friend.friends(params[:friends])
+    @emails = Friend.friends(params[:email])
 
     unless @emails.empty?
       render json:{
