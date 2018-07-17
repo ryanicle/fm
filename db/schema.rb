@@ -10,7 +10,22 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_07_15_050007) do
+ActiveRecord::Schema.define(version: 2018_07_15_081733) do
+
+  create_table "friends", force: :cascade do |t|
+    t.integer "sender_id"
+    t.integer "recipient_id"
+    t.boolean "friendship", default: false
+    t.datetime "friendship_at"
+    t.boolean "subscribed", default: false
+    t.datetime "subscribed_at"
+    t.string "current_status"
+    t.datetime "current_status_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["recipient_id"], name: "index_friends_on_recipient_id"
+    t.index ["sender_id"], name: "index_friends_on_sender_id"
+  end
 
   create_table "users", force: :cascade do |t|
     t.string "email", default: "", null: false
