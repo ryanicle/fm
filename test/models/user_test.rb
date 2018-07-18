@@ -8,12 +8,12 @@ class UserTest < ActiveSupport::TestCase
   #   assert true
   # end
   test "Create user" do
-    user = User.new(email: 'test3@example.com', password: 'User#Test')
+    user = User.new(email: 'amy@example.com', password: 'User#Test')
     assert user.save
   end
 
   test "Should not create user if email already exists" do
-    user = User.new(email: 'test1@example.com', password: 'User#Test')
+    user = User.new(email: 'john@example.com', password: 'User#Test')
     assert_not user.save
   end
 end
