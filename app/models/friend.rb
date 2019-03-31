@@ -15,7 +15,6 @@ class Friend < ApplicationRecord
       @sender.friendship_at = Time.now
       @sender.subscribed = true
       @sender.subscribed_at = Time.now
-      @sender.save
     end
 
     unless @recipient
@@ -26,7 +25,6 @@ class Friend < ApplicationRecord
       @recipient.friendship_at = Time.now
       @recipient.subscribed = true
       @recipient.subscribed_at = Time.now
-      @recipient.save
     end
 
     if @sender.save && @recipient.save
@@ -37,14 +35,7 @@ class Friend < ApplicationRecord
   end
 
   def self.friends(user_id)
-    @friends = Friend.where(sender_id: user_id)
-    @emails = []
-    unless @friends.empty?
-      @friends.each do |friend|
-        @emails.push(friend.recipient.email)
-      end
-    end
-    return @emails
+    Friend.where(sender_id: user_id).pluck(:email)
   end
 
   def self.common_friends(friend_emails)
@@ -73,9 +64,7 @@ class Friend < ApplicationRecord
     @recipient_friend = self.where(sender_id: @recipient.id, recipient_id: @sender.id).first_or_create
 
     unless @recipient_friend.nil?
-      @recipient_friend.subscribed = true
-      @recipient_friend.subscribed_at = Time.now
-      @recipient_friend.save
+      @recipient_friend.update_attributes(subscribed: true, subscribed_at: Time.now)
     else
       false
     end
@@ -88,9 +77,7 @@ class Friend < ApplicationRecord
     @sender_friend = self.where(sender_id: @sender.id, recipient_id: @recipient.id).first
 
     unless @sender_friend.nil?
-      @sender_friend.subscribed = false
-      @sender_friend.subscribed_at = Time.now
-      @sender_friend.save
+      @sender_friend.update_attributes(subscribed: true, subscribed_at: Time.now)
     else
       false
     end
