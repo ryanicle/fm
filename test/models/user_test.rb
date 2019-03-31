@@ -7,6 +7,16 @@ class UserTest < ActiveSupport::TestCase
   # test "the truth" do
   #   assert true
   # end
+  test "Create user without email" do
+    user = User.new(password: 'User#Test')
+    assert_not user.save
+  end
+
+  test "Create user without password" do
+    user = User.new(email: 'any@example.com')
+    assert_not user.save
+  end
+
   test "Create user" do
     user = User.new(email: 'amy@example.com', password: 'User#Test')
     assert user.save
